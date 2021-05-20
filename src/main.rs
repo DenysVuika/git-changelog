@@ -1,53 +1,41 @@
-use clap::{ AppSettings, Clap };
+use clap::Clap;
+use std::path::PathBuf;
+use std::process::Command;
 
-#[derive(Clap)]
-#[clap(version = "1.0.0", author = "Denys Vuika <denys.vuika@gmail.com>")]
-#[clap(setting = AppSettings::ColoredHelp)]
-struct Opts {
-    /// Sets a custom config file. Could have been an Option<T> with no default too
-    #[clap(short, long, default_value = "default.conf")]
-    config: String,
+mod cli;
+use cli::{Opts, SubCommand};
 
-    /// Some input. Because this isn't an Option<T> it's required to be used
-    input: String,
+fn get_remote(dir: PathBuf) -> Option<String> {
+    let output = Command::new("git")
+        .args(&["config", "--get", "remote.origin.url"])
+        .current_dir(dir)
+        .output()
+        .expect("ls command failed");
 
-    /// A level of verbosity, and can be used multiple times
-    #[clap(short, long, parse(from_occurrences))]
-    verbose: i32,
+    if output.status.success() {
+        let mut remote = String::from_utf8_lossy(&output.stdout).to_string();
 
-    #[clap(subcommand)]
-    subcmd: Option<SubCommand>,
-}
+        let len = remote.trim_end_matches(&['\r', '\n'][..]).len();
+        remote.truncate(len);
 
-#[derive(Clap)]
-enum SubCommand {
-    /// Sub-command
-    #[clap(version = "1.0", author = "Denys Vuika <denys.vuika@gmail.com>")]
-    Test(Test),
-}
+        /*
+        if remote.ends_with(".git") {
+            remote.truncate(remote.len() - 4);
+        }
+        */
 
-#[derive(Clap)]
-struct Test {
-    /// Print debug info
-    #[clap(short)]
-    debug: bool,
+        Some(remote)
+    } else {
+        None
+    }
 }
 
 fn main() {
     let opts: Opts = Opts::parse();
 
-    // Gets a value for config if supplied by user, or defaults to "default.conf"
     println!("Value for config: {}", opts.config);
-    println!("Using input file: {}", opts.input);
-
-    // Vary the output based on how many times the user used the "verbose" flag
-    // (i.e. 'myprog -v -v -v' or 'myprog -vvv' vs 'myprog -v'
-    match opts.verbose {
-        0 => println!("No verbose info"),
-        1 => println!("Some verbose info"),
-        2 => println!("Tons of verbose info"),
-        3 | _ => println!("Don't be crazy"),
-    }
+    println!("Value for dir: {:?}", opts.dir);
+    println!("Verbose output: {}", opts.verbose);
 
     // You can handle information about subcommands by requesting their matches by name
     // (as below), requesting just the name used, or both at the same time
@@ -63,5 +51,9 @@ fn main() {
         }
     }
 
-    // more program logic goes here...
+    if let Some(remote) = get_remote(opts.dir) {
+        println!("remote: {}", remote);
+    } else {
+        println!("Remote not found");
+    }
 }
