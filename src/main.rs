@@ -1,34 +1,9 @@
 use clap::Clap;
-use std::path::PathBuf;
-use std::process::Command;
 
 mod cli;
 use cli::{Opts, SubCommand};
 
-fn get_remote(dir: PathBuf) -> Option<String> {
-    let output = Command::new("git")
-        .args(&["config", "--get", "remote.origin.url"])
-        .current_dir(dir)
-        .output()
-        .expect("ls command failed");
-
-    if output.status.success() {
-        let mut remote = String::from_utf8_lossy(&output.stdout).to_string();
-
-        let len = remote.trim_end_matches(&['\r', '\n'][..]).len();
-        remote.truncate(len);
-
-        /*
-        if remote.ends_with(".git") {
-            remote.truncate(remote.len() - 4);
-        }
-        */
-
-        Some(remote)
-    } else {
-        None
-    }
-}
+mod git;
 
 fn main() {
     let opts: Opts = Opts::parse();
@@ -51,7 +26,7 @@ fn main() {
         }
     }
 
-    if let Some(remote) = get_remote(opts.dir) {
+    if let Some(remote) = git::get_remote(opts.dir) {
         println!("remote: {}", remote);
     } else {
         println!("Remote not found");
