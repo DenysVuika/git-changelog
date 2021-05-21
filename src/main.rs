@@ -5,13 +5,11 @@ mod cli;
 use cli::{Opts, SubCommand};
 
 mod git;
+use git::LogOptions;
 
 fn main() -> Result<()> {
     let opts: Opts = Opts::parse();
-
-    println!("Value for config: {}", opts.config);
-    println!("Value for dir: {:?}", opts.dir);
-    println!("Verbose output: {}", opts.verbose);
+    println!("{:?}", &opts);
 
     // You can handle information about subcommands by requesting their matches by name
     // (as below), requesting just the name used, or both at the same time
@@ -27,9 +25,15 @@ fn main() -> Result<()> {
         }
     }
 
+    let options = LogOptions {
+        // range: String::from("master..develop"),
+        range: opts.range,
+        dir: opts.dir.clone(),
+    };
+
     if let Some(remote) = git::get_remote(&opts.dir) {
         println!("remote: {}", remote);
-        git::log(&opts.dir)?;
+        git::log(&options)?;
     } else {
         println!("Remote not found");
     }

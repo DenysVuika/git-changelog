@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use serde::Deserialize;
 use std::{path::PathBuf, process::Command};
 
@@ -15,6 +15,12 @@ struct Commit {
     author_email: String,
     date: String,
     subject: String,
+}
+
+#[derive(Debug)]
+pub struct LogOptions {
+    pub range: String,
+    pub dir: PathBuf,
 }
 
 pub fn get_remote(dir: &PathBuf) -> Option<String> {
@@ -43,23 +49,27 @@ pub fn get_remote(dir: &PathBuf) -> Option<String> {
     None
 }
 
-pub fn log(dir: &PathBuf) -> Result<()> {
+pub fn log(options: &LogOptions) -> Result<()> {
+    println!("{:?}", &options);
+
     let output = Command::new("git")
         .args(&[
             "log",
-            "master..develop",
+            &options.range,
             "--no-merges",
             "--first-parent",
             "--invert-grep",
             "--author=bot\\|Alfresco Build User",
             "--format={ \"commit\": \"%h\", \"author\": \"%an\", \"author_email\": \"%ae\", \"date\": \"%ad\", \"subject\": \"%s\" }",
         ])
-        .current_dir(dir)
+        .current_dir(&options.dir)
         .output()?;
 
     if !output.status.success() {
-        println!("{}", String::from_utf8_lossy(&output.stderr).to_string());
-        panic!("Command executed with failing error code");
+        return Err(anyhow!(
+            "{}",
+            String::from_utf8_lossy(&output.stderr).to_string()
+        ));
     }
 
     String::from_utf8(output.stdout)?

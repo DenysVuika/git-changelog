@@ -1,7 +1,7 @@
 use clap::{AppSettings, Clap};
 use std::path::PathBuf;
 
-#[derive(Clap)]
+#[derive(Clap, Debug)]
 #[clap(version = "1.0.0", author = "Denys Vuika <denys.vuika@gmail.com>")]
 #[clap(setting = AppSettings::ColoredHelp)]
 pub struct Opts {
@@ -13,25 +13,25 @@ pub struct Opts {
     #[clap(short, long, parse(from_os_str), default_value = ".")]
     pub dir: PathBuf,
 
-    /// Some input. Because this isn't an Option<T> it's required to be used
-    // input: String,
-
     /// Verbose output
     #[clap(short, long)]
     pub verbose: bool,
 
     #[clap(subcommand)]
     pub subcmd: Option<SubCommand>,
+
+    /// Commit range, i.e. master..develop
+    pub range: String,
 }
 
-#[derive(Clap)]
+#[derive(Clap, Debug)]
 pub enum SubCommand {
     /// Sub-command
     #[clap(version = "1.0", author = "Denys Vuika <denys.vuika@gmail.com>")]
     Test(Test),
 }
 
-#[derive(Clap)]
+#[derive(Clap, Debug)]
 pub struct Test {
     /// Print debug info
     #[clap(short)]
