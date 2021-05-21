@@ -1,3 +1,4 @@
+use anyhow::Result;
 use clap::Clap;
 
 mod cli;
@@ -5,7 +6,7 @@ use cli::{Opts, SubCommand};
 
 mod git;
 
-fn main() {
+fn main() -> Result<()> {
     let opts: Opts = Opts::parse();
 
     println!("Value for config: {}", opts.config);
@@ -26,9 +27,12 @@ fn main() {
         }
     }
 
-    if let Some(remote) = git::get_remote(opts.dir) {
+    if let Some(remote) = git::get_remote(&opts.dir) {
         println!("remote: {}", remote);
+        git::log(&opts.dir)?;
     } else {
         println!("Remote not found");
     }
+
+    Ok(())
 }
