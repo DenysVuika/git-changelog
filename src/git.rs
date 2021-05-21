@@ -22,6 +22,7 @@ pub struct LogOptions {
     pub range: String,
     pub dir: PathBuf,
     pub max_count: Option<i32>,
+    pub skip: Option<i32>,
 }
 
 pub fn get_remote(dir: &PathBuf) -> Option<String> {
@@ -59,7 +60,8 @@ pub fn log(options: &LogOptions) -> Result<()> {
         "--first-parent",
         "--invert-grep",
         "--author=bot\\|Alfresco Build User",
-        "--format={ \"commit\": \"%h\", \"author\": \"%an\", \"author_email\": \"%ae\", \"date\": \"%ad\", \"subject\": \"%s\" }",
+        // "--format={ \"commit\": \"%h\", \"author\": \"%an\", \"author_email\": \"%ae\", \"date\": \"%ad\", \"subject\": \"%s\" }",
+        "--format={ ^@^commit^@^: ^@^%h^@^, ^@^author^@^: ^@^%an^@^, ^@^author_email^@^: ^@^%ae^@^, ^@^date^@^: ^@^%ad^@^, ^@^subject^@^: ^@^%s^@^ }",
         &options.range,
     ].to_vec();
 
@@ -70,6 +72,10 @@ pub fn log(options: &LogOptions) -> Result<()> {
         command.arg(format!("--max-count={}", max_count));
     }
 
+    if let Some(skip) = &options.skip {
+        command.arg(format!("--skip={}", skip));
+    }
+
     let output = command.output()?;
 
     if !output.status.success() {
@@ -78,9 +84,13 @@ pub fn log(options: &LogOptions) -> Result<()> {
 
     String::from_utf8(output.stdout)?
         .lines()
-        // .take(10)
-        .map(|json| serde_json::from_str(json).unwrap())
-        .for_each(|x: Commit| println!("{:?}", x));
+        .map(|json| {
+            // https://stackoverflow.com/a/13928240/14644447
+            let json = str::replace(&json, "\"", "\\\"");
+            let json = str::replace(&json, "^@^", "\"");
+            serde_json::from_str(&json).unwrap()
+        })
+        .for_each(|commit: Commit| println!("{:?}", commit));
 
     Ok(())
 }

@@ -6,11 +6,17 @@ use std::path::PathBuf;
 #[clap(setting = AppSettings::ColoredHelp)]
 pub struct Opts {
     /// Sets a custom config file
-    #[clap(short, long, default_value = "default.conf")]
+    #[clap(short, long, default_value = "default.conf", value_name = "path")]
     pub config: String,
 
     /// Working directory
-    #[clap(short, long, parse(from_os_str), default_value = ".")]
+    #[clap(
+        short,
+        long,
+        parse(from_os_str),
+        default_value = ".",
+        value_name = "path"
+    )]
     pub dir: PathBuf,
 
     /// Verbose output
@@ -21,8 +27,12 @@ pub struct Opts {
     pub subcmd: Option<SubCommand>,
 
     /// Limit the number of commits to output
-    #[clap(short = 'n', long)]
+    #[clap(short = 'n', long, value_name = "number")]
     pub max_count: Option<i32>,
+
+    /// Skip number commits before starting to show the commit output.
+    #[clap(long, value_name = "number")]
+    pub skip: Option<i32>,
 
     /// Commit range, i.e. master..develop
     pub range: String,

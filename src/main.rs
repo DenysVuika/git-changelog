@@ -32,6 +32,7 @@ fn main() -> Result<()> {
             range: opts.range,
             dir: opts.dir,
             max_count: opts.max_count,
+            skip: opts.skip,
         };
 
         git::log(&options)?;
