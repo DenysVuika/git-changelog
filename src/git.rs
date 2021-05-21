@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{bail, Result};
 use serde::Deserialize;
 use std::{path::PathBuf, process::Command};
 
@@ -21,6 +21,7 @@ struct Commit {
 pub struct LogOptions {
     pub range: String,
     pub dir: PathBuf,
+    pub max_count: Option<i32>,
 }
 
 pub fn get_remote(dir: &PathBuf) -> Option<String> {
@@ -52,29 +53,32 @@ pub fn get_remote(dir: &PathBuf) -> Option<String> {
 pub fn log(options: &LogOptions) -> Result<()> {
     println!("{:?}", &options);
 
-    let output = Command::new("git")
-        .args(&[
-            "log",
-            &options.range,
-            "--no-merges",
-            "--first-parent",
-            "--invert-grep",
-            "--author=bot\\|Alfresco Build User",
-            "--format={ \"commit\": \"%h\", \"author\": \"%an\", \"author_email\": \"%ae\", \"date\": \"%ad\", \"subject\": \"%s\" }",
-        ])
-        .current_dir(&options.dir)
-        .output()?;
+    let args: Vec<&str> = [
+        "log",
+        "--no-merges",
+        "--first-parent",
+        "--invert-grep",
+        "--author=bot\\|Alfresco Build User",
+        "--format={ \"commit\": \"%h\", \"author\": \"%an\", \"author_email\": \"%ae\", \"date\": \"%ad\", \"subject\": \"%s\" }",
+        &options.range,
+    ].to_vec();
+
+    let mut command = Command::new("git");
+    command.args(&args).current_dir(&options.dir);
+
+    if let Some(max_count) = &options.max_count {
+        command.arg(format!("--max-count={}", max_count));
+    }
+
+    let output = command.output()?;
 
     if !output.status.success() {
-        return Err(anyhow!(
-            "{}",
-            String::from_utf8_lossy(&output.stderr).to_string()
-        ));
+        bail!("{}", String::from_utf8_lossy(&output.stderr).to_string());
     }
 
     String::from_utf8(output.stdout)?
         .lines()
-        .take(10)
+        // .take(10)
         .map(|json| serde_json::from_str(json).unwrap())
         .for_each(|x: Commit| println!("{:?}", x));
 

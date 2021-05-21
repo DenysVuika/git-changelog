@@ -25,14 +25,15 @@ fn main() -> Result<()> {
         }
     }
 
-    let options = LogOptions {
-        // range: String::from("master..develop"),
-        range: opts.range,
-        dir: opts.dir.clone(),
-    };
-
     if let Some(remote) = git::get_remote(&opts.dir) {
         println!("remote: {}", remote);
+
+        let options = LogOptions {
+            range: opts.range,
+            dir: opts.dir,
+            max_count: opts.max_count,
+        };
+
         git::log(&options)?;
     } else {
         println!("Remote not found");

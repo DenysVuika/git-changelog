@@ -5,7 +5,7 @@ use std::path::PathBuf;
 #[clap(version = "1.0.0", author = "Denys Vuika <denys.vuika@gmail.com>")]
 #[clap(setting = AppSettings::ColoredHelp)]
 pub struct Opts {
-    /// Sets a custom config file. Could have been an Option<T> with no default too
+    /// Sets a custom config file
     #[clap(short, long, default_value = "default.conf")]
     pub config: String,
 
@@ -19,6 +19,10 @@ pub struct Opts {
 
     #[clap(subcommand)]
     pub subcmd: Option<SubCommand>,
+
+    /// Limit the number of commits to output
+    #[clap(short = 'n', long)]
+    pub max_count: Option<i32>,
 
     /// Commit range, i.e. master..develop
     pub range: String,
