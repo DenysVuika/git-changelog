@@ -7,11 +7,14 @@ use cli::{Opts, SubCommand};
 mod git;
 use git::LogOptions;
 
+mod formatting;
+use formatting::{format_markdown, FormatOptions};
+
 fn main() -> Result<()> {
     let opts: Opts = Opts::parse();
     println!("{:?}", &opts);
 
-    // You can handle information about subcommands by requesting their matches by name
+    // You can handle information about sub-commands by requesting their matches by name
     // (as below), requesting just the name used, or both at the same time
     if let Some(opts) = opts.subcmd {
         match opts {
@@ -28,14 +31,18 @@ fn main() -> Result<()> {
     if let Some(remote) = git::get_remote(&opts.dir) {
         println!("remote: {}", remote);
 
-        let options = LogOptions {
+        let commits = git::log(LogOptions {
             range: opts.range,
             dir: opts.dir,
             max_count: opts.max_count,
             skip: opts.skip,
-        };
+        })?;
 
-        git::log(&options)?;
+        format_markdown(FormatOptions {
+            remote,
+            commits,
+            template: opts.template,
+        })?;
     } else {
         println!("Remote not found");
     }

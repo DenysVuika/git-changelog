@@ -1,5 +1,5 @@
 use anyhow::{bail, Result};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::{path::PathBuf, process::Command};
 
 // #[derive(PartialEq, Default, Clone, Debug)]
@@ -8,13 +8,13 @@ use std::{path::PathBuf, process::Command};
 //     pub message: String,
 // }
 
-#[derive(Debug, Deserialize)]
-struct Commit {
-    commit: String,
-    author: String,
-    author_email: String,
-    date: String,
-    subject: String,
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Commit {
+    pub hash: String,
+    pub author: String,
+    pub author_email: String,
+    pub date: String,
+    pub subject: String,
 }
 
 #[derive(Debug)]
@@ -51,7 +51,7 @@ pub fn get_remote(dir: &PathBuf) -> Option<String> {
     None
 }
 
-pub fn log(options: &LogOptions) -> Result<()> {
+pub fn log(options: LogOptions) -> Result<Vec<Commit>> {
     println!("{:?}", &options);
 
     let args: Vec<&str> = [
@@ -60,8 +60,7 @@ pub fn log(options: &LogOptions) -> Result<()> {
         "--first-parent",
         "--invert-grep",
         "--author=bot\\|Alfresco Build User",
-        // "--format={ \"commit\": \"%h\", \"author\": \"%an\", \"author_email\": \"%ae\", \"date\": \"%ad\", \"subject\": \"%s\" }",
-        "--format={ ^@^commit^@^: ^@^%h^@^, ^@^author^@^: ^@^%an^@^, ^@^author_email^@^: ^@^%ae^@^, ^@^date^@^: ^@^%ad^@^, ^@^subject^@^: ^@^%s^@^ }",
+        "--format={ ^@^hash^@^: ^@^%h^@^, ^@^author^@^: ^@^%an^@^, ^@^author_email^@^: ^@^%ae^@^, ^@^date^@^: ^@^%ad^@^, ^@^subject^@^: ^@^%s^@^ }",
         &options.range,
     ].to_vec();
 
@@ -82,7 +81,7 @@ pub fn log(options: &LogOptions) -> Result<()> {
         bail!("{}", String::from_utf8_lossy(&output.stderr).to_string());
     }
 
-    String::from_utf8(output.stdout)?
+    let commits = String::from_utf8(output.stdout)?
         .lines()
         .map(|json| {
             // https://stackoverflow.com/a/13928240/14644447
@@ -90,7 +89,7 @@ pub fn log(options: &LogOptions) -> Result<()> {
             let json = str::replace(&json, "^@^", "\"");
             serde_json::from_str(&json).unwrap()
         })
-        .for_each(|commit: Commit| println!("{:?}", commit));
+        .collect();
 
-    Ok(())
+    Ok(commits)
 }

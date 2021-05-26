@@ -34,6 +34,10 @@ pub struct Opts {
     #[clap(long, value_name = "number")]
     pub skip: Option<i32>,
 
+    /// Path to the custom output template
+    #[clap(short, long, parse(from_os_str))]
+    pub template: Option<PathBuf>,
+
     /// Commit range, i.e. master..develop
     pub range: String,
 }
