@@ -8,7 +8,7 @@ mod git;
 use git::LogOptions;
 
 mod formatting;
-use formatting::{format_markdown, FormatOptions};
+use formatting::{format_commits, FormatOptions};
 
 fn main() -> Result<()> {
     let opts: Opts = Opts::parse();
@@ -35,10 +35,11 @@ fn main() -> Result<()> {
             skip: opts.skip,
         })?;
 
-        format_markdown(FormatOptions {
+        format_commits(FormatOptions {
             remote,
             commits,
             template: opts.template,
+            output: opts.output,
         })?;
     } else {
         println!("Error: Remote not found");

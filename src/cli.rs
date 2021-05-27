@@ -38,6 +38,10 @@ pub struct Opts {
     #[clap(short, long, parse(from_os_str))]
     pub template: Option<PathBuf>,
 
+    /// Output file, will use console output if not defined
+    #[clap(short, long, parse(from_os_str))]
+    pub output: Option<PathBuf>,
+
     /// Commit range, i.e. master..develop
     pub range: String,
 }
