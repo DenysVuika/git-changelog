@@ -12,7 +12,6 @@ use formatting::{format_markdown, FormatOptions};
 
 fn main() -> Result<()> {
     let opts: Opts = Opts::parse();
-    println!("{:?}", &opts);
 
     // You can handle information about sub-commands by requesting their matches by name
     // (as below), requesting just the name used, or both at the same time
@@ -29,8 +28,6 @@ fn main() -> Result<()> {
     }
 
     if let Some(remote) = git::get_remote(&opts.dir) {
-        println!("remote: {}", remote);
-
         let commits = git::log(LogOptions {
             range: opts.range,
             dir: opts.dir,
@@ -44,7 +41,7 @@ fn main() -> Result<()> {
             template: opts.template,
         })?;
     } else {
-        println!("Remote not found");
+        println!("Error: Remote not found");
     }
 
     Ok(())

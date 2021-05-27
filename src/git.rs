@@ -52,8 +52,6 @@ pub fn get_remote(dir: &PathBuf) -> Option<String> {
 }
 
 pub fn log(options: LogOptions) -> Result<Vec<Commit>> {
-    println!("{:?}", &options);
-
     let args: Vec<&str> = [
         "log",
         "--no-merges",
