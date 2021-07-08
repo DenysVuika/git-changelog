@@ -2,6 +2,12 @@
 
 Simple tool for release changelog reports with multiple template support.
 
+Features
+
+- Supports multiple output templates
+- [Handlebars](https://handlebarsjs.com/) templating language support
+- Excludes bots noise from the output (Dependabot, etc.)
+
 ## Usage
 
 You can get usage details by running the command with the `--help` argument:
