@@ -5,7 +5,7 @@ use std::path::PathBuf;
 #[clap(
     version = "1.0.0",
     author = "Denys Vuika <denys.vuika@gmail.com>",
-    about = "Release changelog generator (https://github.com/DenysVuika/git-changelog)"
+    about = "Release changelog generator for Git-enabled projects (https://github.com/DenysVuika/git-changelog)"
 )]
 #[clap(setting = AppSettings::ColoredHelp)]
 pub struct Opts {

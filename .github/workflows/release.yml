@@ -109,7 +109,7 @@ jobs:
         esac
 
         cp target/${{ matrix.target }}/release/git-changelog $stage/
-        cp -r target/${{ matrix.target }}/release/assets $stage/
+        cp -r assets $stage/
         cp LICENSE $stage
         cp README.md $stage 
         cd $stage
