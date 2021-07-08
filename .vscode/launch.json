@@ -1,45 +1,36 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug executable 'git-changelog'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=git-changelog",
-                    "--package=git-changelog"
-                ],
-                "filter": {
-                    "name": "git-changelog",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable 'git-changelog'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=git-changelog",
-                    "--package=git-changelog"
-                ],
-                "filter": {
-                    "name": "git-changelog",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'git-chlog'",
+      "cargo": {
+        "args": ["build", "--bin=git-chlog", "--package=git-chlog"],
+        "filter": {
+          "name": "git-chlog",
+          "kind": "bin"
         }
-    ]
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'git-chlog'",
+      "cargo": {
+        "args": ["test", "--no-run", "--bin=git-chlog", "--package=git-chlog"],
+        "filter": {
+          "name": "git-chlog",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
 }

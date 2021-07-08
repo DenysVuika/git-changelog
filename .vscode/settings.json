@@ -1,6 +1,4 @@
 {
-    "cSpell.words": [
-        "subcommand"
-    ],
-    "editor.formatOnSave": true
+  "cSpell.words": ["chlog", "subcommand"],
+  "editor.formatOnSave": true
 }

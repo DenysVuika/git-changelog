@@ -13,12 +13,12 @@ Features
 You can get usage details by running the command with the `--help` argument:
 
 ```sh
-./git-changelog --help
+./git-chlog --help
 ```
 
 ```text
 USAGE:
-    git-changelog [FLAGS] [OPTIONS] <range>
+    git-chlog [FLAGS] [OPTIONS] <range>
 
 ARGS:
     <range>    Commit range, i.e. master..develop
@@ -41,10 +41,10 @@ OPTIONS:
 
 ```sh
 # generate release log with markdown format using changes between develop and master branches
-./git-changelog -d ~/github/my-app master..develop > v1.md
+./git-chlog -d ~/github/my-app master..develop > v1.md
 
 # generate release log with HTML format using changes between develop and master branches
-./git-changelog -d ~/github/my-app master..develop -t ./assets/templates/html.hbs > v1.html
+./git-chlog -d ~/github/my-app master..develop -t ./assets/templates/html.hbs > v1.html
 ```
 
 ## Templates

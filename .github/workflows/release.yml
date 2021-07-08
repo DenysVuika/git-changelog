@@ -47,18 +47,6 @@ jobs:
           rust: stable
           target: x86_64-unknown-linux-musl
           cross: false
-        - build: arm-v7
-          os: ubuntu-latest
-          rust: stable
-          target: armv7-unknown-linux-gnueabihf
-          linker: gcc-arm-linux-gnueabihf
-          cross: true
-        - build: aarch64
-          os: ubuntu-latest
-          rust: stable
-          target: aarch64-unknown-linux-gnu
-          linker: gcc-aarch64-linux-gnu
-          cross: true
         - build: macos
           os: macos-latest
           rust: stable
@@ -108,14 +96,14 @@ jobs:
                 ;;
         esac
 
-        cp target/${{ matrix.target }}/release/git-changelog $stage/
+        cp target/${{ matrix.target }}/release/git-chlog $stage/
         cp -r assets $stage/
         cp LICENSE $stage
         cp README.md $stage 
         cd $stage
 
         RELEASE_VERSION=${GITHUB_REF#refs/tags/}
-        ASSET_NAME="git-changelog-$RELEASE_VERSION-${{ matrix.target }}.tar.gz"
+        ASSET_NAME="git-chlog-$RELEASE_VERSION-${{ matrix.target }}.tar.gz"
         ASSET_PATH="$src/$ASSET_NAME"
         CHECKSUM_PATH="$ASSET_PATH.sha256"
 

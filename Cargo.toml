@@ -1,5 +1,5 @@
 [package]
-name = "git-changelog"
+name = "git-chlog"
 version = "0.1.0"
 authors = ["Denys Vuika <denys.vuika@gmail.com>"]
 description = "Release changelog generator for Git-enabled projects"
