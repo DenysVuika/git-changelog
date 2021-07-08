@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::Clap;
 
 mod cli;
-use cli::{Opts, SubCommand};
+use cli::Opts;
 
 mod git;
 use git::LogOptions;
@@ -15,6 +15,7 @@ fn main() -> Result<()> {
 
     // You can handle information about sub-commands by requesting their matches by name
     // (as below), requesting just the name used, or both at the same time
+    /*
     if let Some(opts) = opts.subcmd {
         match opts {
             SubCommand::Test(t) => {
@@ -26,6 +27,7 @@ fn main() -> Result<()> {
             }
         }
     }
+    */
 
     if let Some(remote) = git::get_remote(&opts.dir) {
         let commits = git::log(LogOptions {

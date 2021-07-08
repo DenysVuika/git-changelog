@@ -2,7 +2,11 @@ use clap::{AppSettings, Clap};
 use std::path::PathBuf;
 
 #[derive(Clap, Debug)]
-#[clap(version = "1.0.0", author = "Denys Vuika <denys.vuika@gmail.com>")]
+#[clap(
+    version = "1.0.0",
+    author = "Denys Vuika <denys.vuika@gmail.com>",
+    about = "Release changelog generator (https://github.com/DenysVuika/git-changelog)"
+)]
 #[clap(setting = AppSettings::ColoredHelp)]
 pub struct Opts {
     /// Sets a custom config file
@@ -23,9 +27,8 @@ pub struct Opts {
     #[clap(short, long)]
     pub verbose: bool,
 
-    #[clap(subcommand)]
-    pub subcmd: Option<SubCommand>,
-
+    // #[clap(subcommand)]
+    // pub subcmd: Option<SubCommand>,
     /// Limit the number of commits to output
     #[clap(short = 'n', long, value_name = "number")]
     pub max_count: Option<i32>,
