@@ -1,12 +1,9 @@
 use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
-use std::{path::PathBuf, process::Command};
-
-// #[derive(PartialEq, Default, Clone, Debug)]
-// pub struct Commit {
-//     pub hash: String,
-//     pub message: String,
-// }
+use std::{
+    path::{Path, PathBuf},
+    process::Command,
+};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Commit {
@@ -25,7 +22,7 @@ pub struct LogOptions {
     pub skip: Option<i32>,
 }
 
-pub fn get_remote(dir: &PathBuf) -> Option<String> {
+pub fn get_remote(dir: &Path) -> Option<String> {
     if dir.exists() {
         let output = Command::new("git")
             .args(&["config", "--get", "remote.origin.url"])
